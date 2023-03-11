@@ -114,11 +114,14 @@ void NNParamHandler::setImageManip(const std::string& model_path, std::shared_pt
     imageManip->inputImage.setQueueSize(8);
     imageManip->initialConfig.setResize(input_size, input_size);
 }
-std::string NNParamHandler::getModelPath(const nlohmann::json& data) {
+std::string NNParamHandler::getModelPath(rclcpp::Node* node, const nlohmann::json& data) {
     std::string modelPath;
     auto source = data["model"]["zoo"].get<std::string>();
+    RCLCPP_INFO(node->get_logger(), "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
+
     if(source == "depthai_examples") {
         modelPath = ament_index_cpp::get_package_share_directory("depthai_examples") + "/resources/" + data["model"]["model_name"].get<std::string>() + ".blob";
+        RCLCPP_INFO(node->get_logger(), "xxxxxxxxxxxxxxxxx modelPath= %s", modelPath.c_str());
     } else if(source == "path") {
         modelPath = data["model"]["model_name"].get<std::string>();
     } else {

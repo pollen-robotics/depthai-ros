@@ -79,7 +79,7 @@ class NNParamHandler : public BaseParamHandler {
         std::ifstream f(path);
         json data = json::parse(f);
         if(data.contains("model") && data.contains("nn_config")) {
-            auto modelPath = getModelPath(data);
+            auto modelPath = getModelPath(node, data);
             declareAndLogParam(node, "i_model_path", modelPath);
             setImageManip(modelPath, imageManip);
             nn->setBlobPath(modelPath);
@@ -95,7 +95,7 @@ class NNParamHandler : public BaseParamHandler {
 
    private:
     void setImageManip(const std::string& model_path, std::shared_ptr<dai::node::ImageManip> imageManip);
-    std::string getModelPath(const nlohmann::json& data);
+    std::string getModelPath(rclcpp::Node* node,const nlohmann::json& data);
     std::unordered_map<std::string, nn::NNFamily> nnFamilyMap;
 };
 }  // namespace param_handlers
