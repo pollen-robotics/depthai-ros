@@ -25,6 +25,8 @@ nn::NNFamily NNParamHandler::getNNFamily(rclcpp::Node* node) {
     auto nn_path = declareAndLogParam<std::string>(node, "i_nn_config_path", default_path);
     if(nn_path == "depthai_ros_driver/yolo") {
         nn_path = config_path + "yolo.json";
+    } else if(nn_path == "depthai_ros_driver/yolo_v7") {
+        nn_path = config_path + "yolo_v7.json";
     } else if(nn_path == "depthai_ros_driver/segmentation") {
         nn_path = config_path + "segmentation.json";
     } else if(nn_path == "depthai_ros_driver/mobilenet") {
