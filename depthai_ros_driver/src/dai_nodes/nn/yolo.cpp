@@ -64,7 +64,7 @@ void Yolo::link(const dai::Node::Input& in, int /*linkType*/) {
 }
 
 dai::Node::Input Yolo::getInput(int /*linkType*/) {
-    return imageManip->inputImage;
+    return yoloNode->input;
 }
 
 void Yolo::updateParams(const std::vector<rclcpp::Parameter>& params) {

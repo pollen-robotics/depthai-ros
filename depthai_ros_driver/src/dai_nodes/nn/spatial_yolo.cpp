@@ -62,7 +62,7 @@ void SpatialYolo::link(const dai::Node::Input& in, int /*linkType*/) {
 
 dai::Node::Input SpatialYolo::getInput(int linkType) {
     if(linkType == static_cast<int>(nn_helpers::link_types::SpatialNNLinkType::input)) {
-        return imageManip->inputImage;
+        return yoloNode->input;
     } else {
         return yoloNode->inputDepth;
     }
