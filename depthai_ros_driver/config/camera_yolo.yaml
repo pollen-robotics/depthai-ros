@@ -19,7 +19,7 @@
       i_low_bandwidth: false
       i_low_bandwidth_quality: 50
       i_max_q_size: 30
-      i_publish_topic: false
+      i_publish_topic: true
       i_resolution: "400"
       i_width: 1280
       r_exposure: 1000
@@ -110,7 +110,7 @@
       i_low_bandwidth: false
       i_low_bandwidth_quality: 50
       i_max_q_size: 30
-      i_publish_topic: false
+      i_publish_topic: true
       i_resolution: "400"
       i_width: 1280
       r_exposure: 1000
