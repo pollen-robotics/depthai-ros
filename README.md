@@ -1,3 +1,26 @@
+# README Pollen :)
+Yo,
+Fork the Luxonis, avec ce fix:
+https://github.com/luxonis/depthai-ros/issues/248
+Et ce fix:
+https://github.com/luxonis/depthai-ros/issues/258
+
+Ce que je lance :
+```
+ros2 launch depthai_ros_driver camera_yolo.launch.py
+```
+
+/!\ Il y a des chemin en dur à update dans `depthai_ros_driver/config/camera_yolo.yaml`:
+```
+i_model_path: ...
+i_nn_config_path: ...
+```
+Le blob se trouve ici:
+
+https://github.com/pollen-robotics/simple_grasp_pipe/blob/master/simple_grasp_pipe/utils/yolo-v7-tiny_openvino_2021.4_6shave.blob
+
+Bisous
+
 # Depthai ROS Repository
 Hi and welcome to the main depthai-ros respository! Here you can find ROS related code for OAK cameras from Luxonis. Don't have one? You can get them [here!](https://shop.luxonis.com/)
 
