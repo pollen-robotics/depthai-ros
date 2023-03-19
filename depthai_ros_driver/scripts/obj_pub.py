@@ -85,8 +85,10 @@ class ObjectPublisher(Node):
                         Point(x=bbox.center.position.x - bbox.size.x/2, y=bbox.center.position.y + bbox.size.y/2, z=0.0),
                     ],
                 ))
-
+            
             tf = TransformStamped()
+            tf.header.stamp = self.get_clock().now().to_msg()
+            
             tf.child_frame_id = label
             tf.header.frame_id = msg.header.frame_id
             tf.transform.translation.x = det.results[0].pose.pose.position.x
