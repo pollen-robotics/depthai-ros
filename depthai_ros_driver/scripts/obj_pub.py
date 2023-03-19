@@ -165,8 +165,18 @@ class ObjectPublisher(Node):
             xyz = result.pose.pose.position
 
             # The 3D bbox message is used to transmit the 2D bbox instead
+            # TODO this is an ugly and non exact fix, with the assumption that the magic factor is 740/640
+            # I posted an issue on this here:
+            # https://github.com/luxonis/depthai-ros/issues/259
+            magic_factor = 1.15625
+            d.bbox.size.x *= magic_factor
+            d.bbox.size.y *= magic_factor
+            d.bbox.center.position.x *= magic_factor
+            d.bbox.center.position.y *= magic_factor
+
             size_x_2 = d.bbox.size.x // 2
             size_y_2 = d.bbox.size.y // 2
+            d.bbox.center.position.x += 275
             cv2.rectangle(
                 im,
                 (
