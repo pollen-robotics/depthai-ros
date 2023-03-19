@@ -29,22 +29,37 @@ from visualization_msgs.msg import ImageMarker, MarkerArray, Marker
 from geometry_msgs.msg import Point, Pose, Vector3
 from std_msgs.msg import ColorRGBA, String
 from foxglove_msgs.msg import ImageMarkerArray
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+import numpy as np
+import cv2
+import copy
 
 
 class ObjectPublisher(Node):
-
     def __init__(self):
-        super().__init__('object_publisher')
+        super().__init__("object_publisher")
         self._sub_ = self.create_subscription(
-            Detection3DArray, '/oak/nn/detections', self.publish_data, 10)
+            Detection3DArray, "/oak/nn/detections", self.publish_data, 10
+        )
         self._det_pub = self.create_publisher(
-            ImageMarkerArray, '/oak/nn/detection_markers', 10)
-        self._text_pub = self.create_publisher(
-            MarkerArray, '/oak/nn/text_markers', 10)
+            ImageMarkerArray, "/oak/nn/detection_markers", 10
+        )
+        self._text_pub = self.create_publisher(MarkerArray, "/oak/nn/text_markers", 10)
+        self._image_sub_ = self.create_subscription(
+            Image, "/oak/rgb/image_raw", self.read_image, 10
+        )
+        self._image_pub = self.create_publisher(Image, "/oak/rgb/image_bb", 10)
+
         self._br = TransformBroadcaster(self)
         self._unique_id = 0
+        self.br = CvBridge()
+        self.img = None
 
-        self.get_logger().info('ObjectPublisher node Up!')
+        self.get_logger().info("ObjectPublisher node Up!")
+
+    def read_image(self, img: Image):
+        self.img = self.br.imgmsg_to_cv2(img)
 
     def publish_data(self, msg: Detection3DArray):
         markerArray = ImageMarkerArray()
@@ -55,9 +70,10 @@ class ObjectPublisher(Node):
         for det in msg.detections:
             bbox = det.bbox
             det.results[0]
-            label = f'{det.results[0].hypothesis.class_id}_{i + self._unique_id}'
+            label = f"{det.results[0].hypothesis.class_id}_{i + self._unique_id}"
             det_pose = det.results[0].pose.pose
-            textMarker.markers.append(Marker(
+            textMarker.markers.append(
+                Marker(
                     header=msg.header,
                     id=i + self._unique_id,
                     scale=Vector3(x=0.1, y=0.1, z=0.1),
@@ -65,11 +81,12 @@ class ObjectPublisher(Node):
                     color=ColorRGBA(r=0.0, g=1.0, b=1.0, a=1.0),
                     action=0,
                     text=label,
-                    pose=det_pose
+                    pose=det_pose,
                 )
-                )
+            )
 
-            markerArray.markers.append(ImageMarker(
+            markerArray.markers.append(
+                ImageMarker(
                     header=msg.header,
                     id=i + self._unique_id,
                     scale=1.0,
@@ -78,17 +95,38 @@ class ObjectPublisher(Node):
                     outline_color=ColorRGBA(r=0.0, g=255.0, b=255.0, a=255.0),
                     fill_color=ColorRGBA(b=255.0, a=0.2),
                     points=[
-                        Point(x=bbox.center.position.x - bbox.size.x/2, y=bbox.center.position.y + bbox.size.y/2, z=0.0),
-                        Point(x=bbox.center.position.x + bbox.size.x/2, y=bbox.center.position.y + bbox.size.y/2, z=0.0),
-                        Point(x=bbox.center.position.x + bbox.size.x/2, y=bbox.center.position.y - bbox.size.y/2, z=0.0),
-                        Point(x=bbox.center.position.x - bbox.size.x/2, y=bbox.center.position.y - bbox.size.y/2, z=0.0),
-                        Point(x=bbox.center.position.x - bbox.size.x/2, y=bbox.center.position.y + bbox.size.y/2, z=0.0),
+                        Point(
+                            x=bbox.center.position.x - bbox.size.x / 2,
+                            y=bbox.center.position.y + bbox.size.y / 2,
+                            z=0.0,
+                        ),
+                        Point(
+                            x=bbox.center.position.x + bbox.size.x / 2,
+                            y=bbox.center.position.y + bbox.size.y / 2,
+                            z=0.0,
+                        ),
+                        Point(
+                            x=bbox.center.position.x + bbox.size.x / 2,
+                            y=bbox.center.position.y - bbox.size.y / 2,
+                            z=0.0,
+                        ),
+                        Point(
+                            x=bbox.center.position.x - bbox.size.x / 2,
+                            y=bbox.center.position.y - bbox.size.y / 2,
+                            z=0.0,
+                        ),
+                        Point(
+                            x=bbox.center.position.x - bbox.size.x / 2,
+                            y=bbox.center.position.y + bbox.size.y / 2,
+                            z=0.0,
+                        ),
                     ],
-                ))
-            
+                )
+            )
+
             tf = TransformStamped()
             tf.header.stamp = self.get_clock().now().to_msg()
-            
+
             tf.child_frame_id = label
             tf.header.frame_id = msg.header.frame_id
             tf.transform.translation.x = det.results[0].pose.pose.position.x
@@ -98,8 +136,70 @@ class ObjectPublisher(Node):
             i += 1
             self._unique_id += 1
 
+        if self.img is not None:
+            img_with_bb = copy.deepcopy(self.img)
+            self.draw_bounding_boxes(img_with_bb, msg)
+            cv2.imshow("/oak/rgb/image_bb", img_with_bb)
+            cv2.waitKey(1)
+            self._image_pub.publish(self.br.cv2_to_imgmsg(img_with_bb))
+
         self._det_pub.publish(markerArray)
         self._text_pub.publish(textMarker)
+
+    def draw_bounding_boxes(
+        self, im: np.ndarray, detection3D: Detection3DArray
+    ) -> np.ndarray:
+        for d in detection3D.detections:
+            nb_results = len(d.results)
+            if nb_results < 1:
+                self.get_logger().warning("0 results for detection (should be 1)")
+                continue
+            elif nb_results > 1:
+                self.get_logger().warning(
+                    f"{nb_results} results for detection (should be 1, check this)"
+                )
+
+            result = d.results[0]
+            id = result.hypothesis.class_id
+            score = result.hypothesis.score
+            xyz = result.pose.pose.position
+
+            # The 3D bbox message is used to transmit the 2D bbox instead
+            size_x_2 = d.bbox.size.x // 2
+            size_y_2 = d.bbox.size.y // 2
+            cv2.rectangle(
+                im,
+                (
+                    (int)(d.bbox.center.position.x - size_x_2),
+                    (int)(d.bbox.center.position.y - size_y_2),
+                ),
+                (
+                    (int)(d.bbox.center.position.x + size_x_2),
+                    (int)(d.bbox.center.position.y + size_y_2),
+                ),
+                (255, 0, 0),
+                4,
+            )
+
+            font_scale = d.bbox.size.x / 1080.0 * 5
+            cv_text = f"id: {id}\nscore: {score:.2f}\nx: {xyz.x:.2f}\ny: {xyz.y:.2f}\nz: {xyz.z:.2f})"
+            for i, line in enumerate(cv_text.split("\n")):
+                y_offset = i * 30
+                cv2.putText(
+                    im,
+                    line,
+                    (
+                        (int)(d.bbox.center.position.x - size_x_2),
+                        (int)(d.bbox.center.position.y - size_y_2 - 5) + y_offset,
+                    ),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    font_scale,
+                    (255, 0, 0),
+                    2,
+                    cv2.LINE_AA,
+                )
+
+        return im
 
 
 def main(args=None):
@@ -117,5 +217,5 @@ def main(args=None):
         rclpy.shutdown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
