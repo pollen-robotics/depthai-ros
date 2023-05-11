@@ -77,12 +77,17 @@ class ObjectPublisher(Node):
         self._image_sub_ = self.create_subscription(
             Image, "/oak/rgb/image_raw", self.read_image, 10
         )
+        self._depth_image_sub_ = self.create_subscription(
+            Image, "/oak/stereo/image_raw", self.read_depth_image, 10
+        )
         self._image_pub = self.create_publisher(Image, "/oak/rgb/image_bb", 10)
+        self._depth_image_pub = self.create_publisher(Image, "/depth_camera/depth/image_rect_raw", 10)
 
         self._br = TransformBroadcaster(self)
         self._unique_id = 0
         self.br = CvBridge()
         self.img = None
+        self.depth_img = None
 
         self.tf_static_broadcaster = StaticTransformBroadcaster(self)
 
@@ -112,6 +117,9 @@ class ObjectPublisher(Node):
 
     def read_image(self, img: Image):
         self.img = self.br.imgmsg_to_cv2(img)
+        
+    def read_depth_image(self, img: Image):
+        self.depth_img = self.br.imgmsg_to_cv2(img)
 
     def publish_data(self, msg: Detection3DArray):
         markerArray = ImageMarkerArray()
@@ -212,6 +220,45 @@ class ObjectPublisher(Node):
             cv2.imshow("/oak/rgb/image_bb", img_with_bb)
             cv2.waitKey(1)
             self._image_pub.publish(self.br.cv2_to_imgmsg(img_with_bb))
+            
+        if self.depth_img is not None:
+            depth_img = copy.deepcopy(self.depth_img)
+            # self.get_logger().warning(f"dtype {depth_img.dtype}, shape {depth_img.shape}")
+            # self.get_logger().warning(f"max value = {np.amax(depth_img)}")
+            # self.get_logger().warning(f"min value = {np.amin(depth_img)}")
+            
+            # TODO double check this... The result should be in meters
+            depth_img_float = (depth_img * 255.0 / (65536*10)).astype(np.float32)
+            depth_img_float_msg = self.br.cv2_to_imgmsg(depth_img_float, '32FC1')
+            # Creating a depth image in the same format that the one used by Gazebo
+            self._depth_image_pub.publish(depth_img_float_msg)
+            
+            # depth_array = np.array(depth_img, dtype=np.int16)
+            # depth_norm = depth_array/np.ma.masked_invalid(depth_array).max()*255
+            
+            # self.get_logger().warning(f"norm max value = {np.amax(depth_norm)}")
+            # self.get_logger().warning(f"norm min value = {np.amin(depth_norm)}")
+            
+            # With this normalization, the pixel values of Red are cm...
+            depth_img = (10*depth_img * 255.0 / 65536).astype(np.uint8)
+            depth_img = cv2.applyColorMap(depth_img, cv2.COLORMAP_HOT)
+            depth_img = np.ascontiguousarray(depth_img)
+            # self.get_logger().warning(f"new max value = {np.amax(depth_img)}")
+            # self.get_logger().warning(f"new min value = {np.amin(depth_img)}")
+            # self.get_logger().warning(f"new dtype {depth_img.dtype}, shape {depth_img.shape}")
+            
+            cv2.imshow("/oak/stereo/image_raw (colored)", depth_img)
+            cv2.imshow("/depth_camera/depth/image_rect_raw (float)", depth_img_float)
+            
+            # cv2.imshow("depth_norm", depth_norm)
+            cv2.waitKey(1)
+            
+        if self.img is not None and self.depth_img is not None:
+            # Need to have both frames in BGR format before blending
+            # if len(frameDisp.shape) < 3:
+            #     frameDisp = cv2.cvtColor(frameDisp, cv2.COLOR_GRAY2BGR)
+            blended = cv2.addWeighted(self.img , 0.5, depth_img, 0.5, 0)
+            cv2.imshow("blended", blended)
 
         self._det_pub.publish(markerArray)
         self._text_pub.publish(textMarker)
