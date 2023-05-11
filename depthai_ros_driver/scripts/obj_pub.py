@@ -25,7 +25,7 @@ from rclpy.duration import Duration
 from rclpy.node import Node
 from tf2_ros.transform_broadcaster import TransformBroadcaster
 from tf2_ros.static_transform_broadcaster import StaticTransformBroadcaster
-from vision_msgs.msg import Detection3DArray
+from vision_msgs.msg import Detection3DArray, Detection2DArray, Detection2D, BoundingBox2D
 from visualization_msgs.msg import ImageMarker, MarkerArray, Marker
 from geometry_msgs.msg import Point, Pose, Vector3
 from std_msgs.msg import ColorRGBA, String
@@ -71,6 +71,8 @@ class ObjectPublisher(Node):
         self._det_pub = self.create_publisher(
             ImageMarkerArray, "/oak/nn/detection_markers", 10
         )
+        self._2Ddet_pub = self.create_publisher(Detection2DArray, 'yolo/detections2d', 10)
+
         self._text_pub = self.create_publisher(MarkerArray, "/oak/nn/text_markers", 10)
         self._image_sub_ = self.create_subscription(
             Image, "/oak/rgb/image_raw", self.read_image, 10
@@ -114,6 +116,7 @@ class ObjectPublisher(Node):
     def publish_data(self, msg: Detection3DArray):
         markerArray = ImageMarkerArray()
         textMarker = MarkerArray()
+        detections2D = Detection2DArray()
         i = 0
         if self._unique_id > 50:
             self._unique_id = 0
@@ -122,6 +125,7 @@ class ObjectPublisher(Node):
             det.results[0]
             label = f"{det.results[0].hypothesis.class_id}_{i + self._unique_id}"
             det_pose = det.results[0].pose.pose
+
             textMarker.markers.append(
                 Marker(
                     header=msg.header,
@@ -173,6 +177,22 @@ class ObjectPublisher(Node):
                     ],
                 )
             )
+            # Creating a 2D detection message from the 3D detection message (that contains the 2D bouding box...)
+            # TODO check if normalized...
+            bbox2D = BoundingBox2D()
+            bbox2D.center.position.x = bbox.center.position.x
+            bbox2D.center.position.y = bbox.center.position.y
+            bbox2D.size_x = bbox.size.x
+            bbox2D.size_y = bbox.size.y
+            detections2D.detections.append(
+                Detection2D(
+                    header=msg.header,
+                    results=det.results,
+                    bbox=bbox2D,
+                    id=det.id,
+                )
+            )
+            
 
             tf = TransformStamped()
             tf.header.stamp = self.get_clock().now().to_msg()
@@ -195,6 +215,7 @@ class ObjectPublisher(Node):
 
         self._det_pub.publish(markerArray)
         self._text_pub.publish(textMarker)
+        self._2Ddet_pub.publish(detections2D)
 
     def draw_bounding_boxes(
         self, im: np.ndarray, detection3D: Detection3DArray
