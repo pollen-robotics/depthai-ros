@@ -10,6 +10,11 @@ Ce que je lance :
 ros2 launch depthai_ros_driver camera_yolo.launch.py
 ```
 
+Il faut installer une lib Pyhton :
+```bash
+pip3 install empy
+```
+
 /!\ Il y a des chemin en dur à update dans `depthai_ros_driver/config/camera_yolo.yaml`:
 ```
 i_model_path: ...
