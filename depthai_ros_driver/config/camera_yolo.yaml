@@ -3,9 +3,9 @@
     camera:
       i_enable_imu: true
       i_enable_ir: true
-      i_floodlight_brightness: 0
+      i_floodlight_brightness: 200
       i_ip: ""
-      i_laser_dot_brightness: 800
+      i_laser_dot_brightness: 0
       i_mx_id: ""
       i_nn_type: spatial
       i_pipeline_type: RGBD
@@ -15,13 +15,13 @@
       i_board_socket_id: 1
       i_calibration_file: ""
       i_fps: 30.0
-      i_height: 720
+      i_height: 400
       i_low_bandwidth: false
       i_low_bandwidth_quality: 50
       i_max_q_size: 30
       i_publish_topic: true
       i_resolution: "400"
-      i_width: 1280
+      i_width: 640
       r_exposure: 1000
       r_iso: 800
       r_set_man_exposure: false
@@ -49,8 +49,8 @@
         - train
         - tvmonitor
       i_max_q_size: 30
-      i_model_path: /home/remi/reachy_ws/install/depthai_examples/share/depthai_examples/resources/yolo-v7-tiny_openvino_2021.4_6shave.blob
-      i_nn_config_path: /home/remi/reachy_ws/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/yolo_v7.json
+      i_model_path: /home/simsim/Pollen/reachy_ws/install/depthai_examples/share/depthai_examples/resources/yolo-v7-tiny_openvino_2021.4_6shave.blob
+      i_nn_config_path: /home/simsim/Pollen/reachy_ws/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/yolo_v7.json
       i_num_inference_threads: 2
       i_num_pool_frames: 4
     oak:
@@ -106,13 +106,13 @@
       i_board_socket_id: 2
       i_calibration_file: ""
       i_fps: 30.0
-      i_height: 720
+      i_height: 400
       i_low_bandwidth: false
       i_low_bandwidth_quality: 50
       i_max_q_size: 30
       i_publish_topic: true
       i_resolution: "400"
-      i_width: 1280
+      i_width: 640
       r_exposure: 1000
       r_iso: 800
       r_set_man_exposure: false
@@ -128,7 +128,7 @@
       i_enable_speckle_filter: false
       i_enable_temporal_filter: false
       i_enable_threshold_filter: false
-      i_extended_disp: false
+      i_extended_disp: true
       i_height: 720
       i_low_bandwidth: false
       i_low_bandwidth_quality: 50
