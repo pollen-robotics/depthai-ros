@@ -5,7 +5,8 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node
+from launch_ros.actions import Node, ComposableNodeContainer
+from launch_ros.descriptions import ComposableNode
 from launch.conditions import IfCondition
 
 
@@ -31,9 +32,41 @@ def launch_setup(context, *args, **kwargs):
             launch_arguments={"name": name,
                               "params_file": params_file}.items()),
         Node(
-        package="depthai_ros_driver",
-        executable="obj_pub.py",
-        )
+            package="depthai_ros_driver",
+            executable="obj_pub.py",
+        ),
+        ComposableNodeContainer(
+            name=name+"_container",
+            namespace="",
+            package="rclcpp_components",
+            executable="component_container",
+            composable_node_descriptions=[
+                    ComposableNode(
+                        package="depth_image_proc",
+                        plugin="depth_image_proc::ConvertMetricNode",
+                        name="convert_metric_node",
+                        remappings=[('image_raw', name+'/stereo/image_raw'),
+                                            ('camera_info', name+'/stereo/camera_info'),
+                                            ('image', name+'/stereo/converted_depth')]
+                    ),
+                    ComposableNode(
+                        package='depth_image_proc',
+                        plugin='depth_image_proc::PointCloudXyzrgbNode',
+                        name='point_cloud_xyzrgb_node',
+                        remappings=[('depth_registered/image_rect', name+'/stereo/converted_depth'),
+                                    ('rgb/image_rect_color', name+'/rgb/image_raw'),
+                                    ('rgb/camera_info', name+'/rgb/camera_info'),
+                                    ('points', name+'/points')],
+                    ),
+                    # ComposableNode(
+                    #     package="depthai_ros_driver",
+                    #     plugin="depthai_ros_driver::Camera",
+                    #     name=name,
+                    #     parameters=[params_file],
+                    # ),
+            ],
+            output="screen",
+        ),
     ]
 
 
