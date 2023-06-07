@@ -97,10 +97,17 @@ class ObjectPublisher(Node):
         t.header.frame_id = "torso"
         t.child_frame_id = "oak-d-base-frame"
 
-        t.transform.translation.x = 0.01
+        # For the old camera (the heavy one, with the first version of the holder)
+        # t.transform.translation.x = 0.01
+        # t.transform.translation.y = -0.1385
+        # t.transform.translation.z = 0.11
+        # quat = quaternion_from_euler(0.0, 50.0 * math.pi / 180.0, 0.0)
+
+        # For the new oak D pro, with the holder created the 06/06/2023
+        t.transform.translation.x = 0.01793554
         t.transform.translation.y = -0.1385
-        t.transform.translation.z = 0.11
-        quat = quaternion_from_euler(0.0, 50.0 * math.pi / 180.0, 0.0)
+        t.transform.translation.z = 0.108801
+        quat = quaternion_from_euler(0.0, 45.0 * math.pi / 180.0, 0.0)
         t.transform.rotation.x = quat[0]
         t.transform.rotation.y = quat[1]
         t.transform.rotation.z = quat[2]
