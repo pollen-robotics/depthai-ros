@@ -49,8 +49,11 @@
         - train
         - tvmonitor
       i_max_q_size: 30
-      i_model_path: /home/simsim/Pollen/reachy_ws/install/depthai_examples/share/depthai_examples/resources/yolo-v7-tiny_openvino_2021.4_6shave.blob
-      i_nn_config_path: /home/simsim/Pollen/reachy_ws/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/yolo_v7.json
+      # i_model_path: /home/remi/reachy_ws/install/depthai_examples/share/depthai_examples/resources/yolov7-tiny_openvino_2022.1_6shave_640x480.blob
+      i_model_path: /home/remi/reachy_ws/install/depthai_examples/share/depthai_examples/resources/yolo-v7-tiny_openvino_2021.4_6shave.blob
+
+      i_nn_config_path: /home/remi/reachy_ws/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/yolo_v7.json
+      # i_nn_config_path: /home/remi/reachy_ws/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/yolov7-tiny_640x480.json
       i_num_inference_threads: 2
       i_num_pool_frames: 4
     oak:
@@ -138,4 +141,4 @@
       i_rectify_edge_fill_color: 0
       i_stereo_conf_threshold: 255
       i_width: 1280
-    use_sim_time: false
+    use_sim_time: true

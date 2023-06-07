@@ -4,53 +4,53 @@
       i_enable_imu: true
       i_enable_ir: true
       i_floodlight_brightness: 200
-      i_ip: ''
+      i_ip: ""
       i_laser_dot_brightness: 0
-      i_mx_id: ''
+      i_mx_id: ""
       i_nn_type: spatial
       i_pipeline_type: RGBD
-      i_usb_port_id: ''
+      i_usb_port_id: ""
       i_usb_speed: SUPER_PLUS
     left:
       i_board_socket_id: 1
-      i_calibration_file: ''
+      i_calibration_file: ""
       i_fps: 30.0
       i_height: 400
       i_low_bandwidth: false
       i_low_bandwidth_quality: 50
       i_max_q_size: 30
       i_publish_topic: false
-      i_resolution: '400'
+      i_resolution: "400"
       i_width: 640
       r_exposure: 1000
       r_iso: 800
       r_set_man_exposure: false
     nn:
       i_label_map:
-      - background
-      - aeroplane
-      - bicycle
-      - bird
-      - boat
-      - bottle
-      - bus
-      - car
-      - cat
-      - chair
-      - cow
-      - diningtable
-      - dog
-      - horse
-      - motorbike
-      - person
-      - pottedplant
-      - sheep
-      - sofa
-      - train
-      - tvmonitor
+        - background
+        - aeroplane
+        - bicycle
+        - bird
+        - boat
+        - bottle
+        - bus
+        - car
+        - cat
+        - chair
+        - cow
+        - diningtable
+        - dog
+        - horse
+        - motorbike
+        - person
+        - pottedplant
+        - sheep
+        - sofa
+        - train
+        - tvmonitor
       i_max_q_size: 30
-      i_model_path: /home/simsim/Pollen/reachy_ws/install/depthai_examples/share/depthai_examples/resources/yolov4_tiny_coco_416x416_openvino_2021.4_6shave_bgr.blob
-      i_nn_config_path: /home/simsim/Pollen/reachy_ws/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/yolo.json
+      i_model_path: /home/remi/reachy_ws/install/depthai_examples/share/depthai_examples/resources/yolov4_tiny_coco_416x416_openvino_2021.4_6shave_bgr.blob
+      i_nn_config_path: /home/remi/reachy_ws/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/yolo.json
       i_num_inference_threads: 2
       i_num_pool_frames: 4
     oak:
@@ -81,7 +81,7 @@
           reliability: reliable
     rgb:
       i_board_socket_id: 0
-      i_calibration_file: ''
+      i_calibration_file: ""
       i_enable_preview: false
       i_fps: 30.0
       i_height: 720
@@ -92,7 +92,7 @@
       i_max_q_size: 30
       i_preview_size: 416
       i_publish_topic: true
-      i_resolution: '1080'
+      i_resolution: "1080"
       i_set_isp_scale: true
       i_width: 1280
       r_exposure: 20000
@@ -104,14 +104,14 @@
       r_whitebalance: 3300
     right:
       i_board_socket_id: 2
-      i_calibration_file: ''
+      i_calibration_file: ""
       i_fps: 30.0
       i_height: 400
       i_low_bandwidth: false
       i_low_bandwidth_quality: 50
       i_max_q_size: 30
       i_publish_topic: false
-      i_resolution: '400'
+      i_resolution: "400"
       i_width: 640
       r_exposure: 1000
       r_iso: 800
@@ -138,4 +138,4 @@
       i_rectify_edge_fill_color: 0
       i_stereo_conf_threshold: 255
       i_width: 1280
-    use_sim_time: false
+    use_sim_time: true
