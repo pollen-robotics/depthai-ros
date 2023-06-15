@@ -3,9 +3,9 @@
     camera:
       i_enable_imu: true
       i_enable_ir: true
-      i_floodlight_brightness: 0
+      i_floodlight_brightness: 200
       i_ip: ''
-      i_laser_dot_brightness: 800
+      i_laser_dot_brightness: 0
       i_mx_id: ''
       i_nn_type: spatial
       i_pipeline_type: RGBD
@@ -33,11 +33,13 @@
       i_calibration_file: ''
       i_get_base_device_timestamp: true
       i_fps: 30.0
-      i_height: 720
+      i_height: 400
       i_low_bandwidth: false
       i_low_bandwidth_quality: 50
       i_max_q_size: 30
       i_publish_topic: false
+      i_resolution: 400
+      i_width: 640
       i_simulate_from_topic: false
       i_disable_node: false
       i_resolution: '720'
@@ -69,8 +71,8 @@
       - train
       - tvmonitor
       i_max_q_size: 30
-      i_model_path: /workspaces/ros_2/install/depthai_examples/share/depthai_examples/resources/mobilenet-ssd_openvino_2021.2_6shave.blob
-      i_nn_config_path: /workspaces/ros_2/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/mobilenet.json
+      i_model_path: /home/simsim/Pollen/reachy_ws/install/depthai_examples/share/depthai_examples/resources/yolov4_tiny_coco_416x416_openvino_2021.4_6shave_bgr.blob
+      i_nn_config_path: /home/simsim/Pollen/reachy_ws/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/yolo.json
       i_num_inference_threads: 2
       i_num_pool_frames: 4
     oak:
@@ -133,11 +135,13 @@
       i_calibration_file: ''
       i_get_base_device_timestamp: true
       i_fps: 30.0
-      i_height: 720
+      i_height: 400
       i_low_bandwidth: false
       i_low_bandwidth_quality: 50
       i_max_q_size: 30
       i_publish_topic: false
+      i_resolution: 400
+      i_width: 640
       i_simulate_from_topic: false
       i_disable_node: false
       i_resolution: '720'

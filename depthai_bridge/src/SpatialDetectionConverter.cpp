@@ -70,7 +70,7 @@ void SpatialDetectionConverter::toRosMsg(std::shared_ptr<dai::SpatialImgDetectio
 
         // converting mm to meters since per ros rep-103 lenght should always be in meters
         opDetectionMsg.detections[i].position.x = inNetData->detections[i].spatialCoordinates.x / 1000;
-        opDetectionMsg.detections[i].position.y = inNetData->detections[i].spatialCoordinates.y / 1000;
+        opDetectionMsg.detections[i].position.y = -inNetData->detections[i].spatialCoordinates.y / 1000;
         opDetectionMsg.detections[i].position.z = inNetData->detections[i].spatialCoordinates.z / 1000;
     }
 
@@ -130,7 +130,7 @@ void SpatialDetectionConverter::toRosVisionMsg(std::shared_ptr<dai::SpatialImgDe
 
         // converting mm to meters since per ros rep-103 lenght should always be in meters
         opDetectionMsg.detections[i].results[0].pose.pose.position.x = inNetData->detections[i].spatialCoordinates.x / 1000;
-        opDetectionMsg.detections[i].results[0].pose.pose.position.y = inNetData->detections[i].spatialCoordinates.y / 1000;
+        opDetectionMsg.detections[i].results[0].pose.pose.position.y = -inNetData->detections[i].spatialCoordinates.y / 1000;
         opDetectionMsg.detections[i].results[0].pose.pose.position.z = inNetData->detections[i].spatialCoordinates.z / 1000;
     }
 
