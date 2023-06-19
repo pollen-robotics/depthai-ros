@@ -30,7 +30,7 @@ nn::NNFamily NNParamHandler::getNNFamily() {
     auto nn_path = declareAndLogParam<std::string>("i_nn_config_path", default_path);
     if(nn_path == "depthai_ros_driver/yolo") {
         nn_path = config_path + "yolo.json";
-    } else if(nn_path == "depthai_ros_driver/yolo_v7") {
+    }else if(nn_path == "depthai_ros_driver/yolo_v7") {
         nn_path = config_path + "yolo_v7.json";
     } else if(nn_path == "depthai_ros_driver/segmentation") {
         nn_path = config_path + "segmentation.json";
@@ -128,14 +128,11 @@ void NNParamHandler::setImageManip(const std::string& model_path, std::shared_pt
     RCLCPP_INFO(getROSNode()->get_logger(), "NN input size: %d x %d. Resizing input image in case of different dimensions.", inputSize, inputSize);
     imageManip->initialConfig.setResize(inputSize, inputSize);
 }
-std::string NNParamHandler::getModelPath(rclcpp::Node* node, const nlohmann::json& data) {
+std::string NNParamHandler::getModelPath(const nlohmann::json& data) {
     std::string modelPath;
     auto source = data["model"]["zoo"].get<std::string>();
-    RCLCPP_INFO(node->get_logger(), "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
-
     if(source == "depthai_examples") {
         modelPath = ament_index_cpp::get_package_share_directory("depthai_examples") + "/resources/" + data["model"]["model_name"].get<std::string>() + ".blob";
-        RCLCPP_INFO(node->get_logger(), "xxxxxxxxxxxxxxxxx modelPath= %s", modelPath.c_str());
     } else if(source == "path") {
         modelPath = data["model"]["model_name"].get<std::string>();
     } else {
