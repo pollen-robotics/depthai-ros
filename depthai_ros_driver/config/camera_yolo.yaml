@@ -3,9 +3,9 @@
     camera:
       i_enable_imu: true
       i_enable_ir: true
-      i_floodlight_brightness: 200
+      i_floodlight_brightness: 0
       i_ip: ""
-      i_laser_dot_brightness: 0
+      i_laser_dot_brightness: 800
       i_mx_id: ""
       i_nn_type: spatial
       i_pipeline_type: RGBD
@@ -26,33 +26,11 @@
       r_iso: 800
       r_set_man_exposure: false
     nn:
-      i_label_map:
-        - background
-        - aeroplane
-        - bicycle
-        - bird
-        - boat
-        - bottle
-        - bus
-        - car
-        - cat
-        - chair
-        - cow
-        - diningtable
-        - dog
-        - horse
-        - motorbike
-        - person
-        - pottedplant
-        - sheep
-        - sofa
-        - train
-        - tvmonitor
       i_max_q_size: 30
-      i_model_path: /home/simsim/Pollen/reachy_ws/install/depthai_examples/share/depthai_examples/resources/yolo-v7-tiny_openvino_2021.4_6shave.blob
-      i_nn_config_path: /home/simsim/Pollen/reachy_ws/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/yolo_v7.json
+      i_nn_config_path: depthai_ros_driver/yolo_v7
       i_num_inference_threads: 2
       i_num_pool_frames: 4
+      i_disable_resize: true
     oak:
       rgb:
         image_raw:
@@ -82,7 +60,7 @@
     rgb:
       i_board_socket_id: 0
       i_calibration_file: ""
-      i_enable_preview: false
+      i_enable_preview: true
       i_fps: 30.0
       i_height: 720
       i_interleaved: false
