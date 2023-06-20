@@ -64,7 +64,7 @@
       i_fps: 30.0
       i_height: 720
       i_interleaved: false
-      i_keep_preview_aspect_ratio: true
+      i_keep_preview_aspect_ratio: false
       i_low_bandwidth: false
       i_low_bandwidth_quality: 50
       i_max_q_size: 30
