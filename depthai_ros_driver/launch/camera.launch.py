@@ -31,14 +31,14 @@ def launch_setup(context, *args, **kwargs):
     cam_yaw      = LaunchConfiguration('cam_yaw',       default = '0.0')
     
     return [
-            Node(
-                condition=IfCondition(LaunchConfiguration("use_rviz").perform(context)),
-                package="rviz2",
-                executable="rviz2",
-                name="rviz2",
-                output="log",
-                arguments=["-d", LaunchConfiguration("rviz_config")],
-            ),
+            # Node(
+            #     condition=IfCondition(LaunchConfiguration("use_rviz").perform(context)),
+            #     package="rviz2",
+            #     executable="rviz2",
+            #     name="rviz2",
+            #     output="log",
+            #     arguments=["-d", LaunchConfiguration("rviz_config")],
+            # ),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(urdf_launch_dir, 'urdf_launch.py')),
