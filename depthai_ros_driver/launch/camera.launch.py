@@ -31,14 +31,14 @@ def launch_setup(context, *args, **kwargs):
     cam_yaw      = LaunchConfiguration('cam_yaw',       default = '0.0')
     
     return [
-            # Node(
-            #     condition=IfCondition(LaunchConfiguration("use_rviz").perform(context)),
-            #     package="rviz2",
-            #     executable="rviz2",
-            #     name="rviz2",
-            #     output="log",
-            #     arguments=["-d", LaunchConfiguration("rviz_config")],
-            # ),
+            Node(
+                condition=IfCondition(LaunchConfiguration("use_rviz").perform(context)),
+                package="rviz2",
+                executable="rviz2",
+                name="rviz2",
+                output="log",
+                arguments=["-d", LaunchConfiguration("rviz_config")],
+            ),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(urdf_launch_dir, 'urdf_launch.py')),
@@ -86,7 +86,7 @@ def generate_launch_description():
         DeclareLaunchArgument("cam_pitch", default_value="0.0"),
         DeclareLaunchArgument("cam_yaw", default_value="0.0"),
         DeclareLaunchArgument("params_file", default_value=os.path.join(depthai_prefix, 'config', 'camera.yaml')),
-        DeclareLaunchArgument("use_rviz", default_value='false'),
+        DeclareLaunchArgument("use_rviz", default_value='true'),
         DeclareLaunchArgument("rviz_config", default_value=os.path.join(depthai_prefix, "config", "rviz", "rgbd.rviz"))
     ]
 
