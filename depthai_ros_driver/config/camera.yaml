@@ -49,8 +49,8 @@
       - train
       - tvmonitor
       i_max_q_size: 30
-      i_model_path: /home/simsim/Pollen/reachy_ws/install/depthai_examples/share/depthai_examples/resources/yolov4_tiny_coco_416x416_openvino_2021.4_6shave_bgr.blob
-      i_nn_config_path: /home/simsim/Pollen/reachy_ws/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/yolo.json
+      i_model_path: /home/remi/reachy_ws/install/depthai_examples/share/depthai_examples/resources/yolov4_tiny_coco_416x416_openvino_2021.4_6shave_bgr.blob
+      i_nn_config_path: /home/remi/reachy_ws/install/depthai_ros_driver/share/depthai_ros_driver/config/nn/yolo.json
       i_num_inference_threads: 2
       i_num_pool_frames: 4
     oak:
