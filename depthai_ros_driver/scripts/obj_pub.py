@@ -65,7 +65,7 @@ def quaternion_from_euler(ai, aj, ak):
 class ObjectPublisher(Node):
     def __init__(self):
         super().__init__("object_publisher")
-        self._sub_ = self.create_subscription(Detection3DArray, "/oak/nn/detections", self.publish_data, 10)
+        self._sub_ = self.create_subscription(Detection3DArray, "/oak/nn/spatial_detections", self.publish_data, 10)
         self._det_pub = self.create_publisher(ImageMarkerArray, "/oak/nn/detection_markers", 10)
         self._2Ddet_pub = self.create_publisher(Detection2DArray, "yolo/detections2d", 10)
 
@@ -108,7 +108,7 @@ class ObjectPublisher(Node):
         t.transform.translation.y = -0.1385
         t.transform.translation.z = 0.108801
         quat = quaternion_from_euler(0.0, 45.0 * math.pi / 180.0, 0.0)
-        
+
         t.transform.rotation.x = quat[0]
         t.transform.rotation.y = quat[1]
         t.transform.rotation.z = quat[2]
@@ -207,6 +207,7 @@ class ObjectPublisher(Node):
 
             tf.child_frame_id = label
             tf.header.frame_id = msg.header.frame_id
+            tf.header.stamp = self.get_clock().now().to_msg()
             tf.transform.translation.x = det.results[0].pose.pose.position.x
             tf.transform.translation.y = det.results[0].pose.pose.position.y
             tf.transform.translation.z = det.results[0].pose.pose.position.z

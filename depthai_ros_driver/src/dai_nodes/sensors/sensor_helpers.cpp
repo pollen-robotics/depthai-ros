@@ -1,5 +1,11 @@
 #include "depthai_ros_driver/dai_nodes/sensors/sensor_helpers.hpp"
 
+#include "camera_info_manager/camera_info_manager.hpp"
+#include "depthai/pipeline/Pipeline.hpp"
+#include "depthai/pipeline/node/VideoEncoder.hpp"
+#include "depthai_bridge/ImageConverter.hpp"
+#include "rclcpp/logger.hpp"
+
 namespace depthai_ros_driver {
 namespace dai_nodes {
 namespace sensor_helpers {
@@ -26,38 +32,43 @@ void ImageSensor::getSizeFromResolution(const dai::ColorCameraProperties::Sensor
             break;
         }
         case dai::ColorCameraProperties::SensorResolution::THE_12_MP: {
-            height = 4056;
-            width = 3040;
+            width = 4056;
+            height = 3040;
             break;
         }
         case dai::ColorCameraProperties::SensorResolution::THE_1200_P: {
-            height = 1920;
-            width = 1200;
+            width = 1920;
+            height = 1200;
             break;
         }
         case dai::ColorCameraProperties::SensorResolution::THE_5_MP: {
-            height = 2592;
-            width = 1944;
+            width = 2592;
+            height = 1944;
             break;
         }
         case dai::ColorCameraProperties::SensorResolution::THE_13_MP: {
-            height = 4208;
-            width = 3120;
+            width = 4208;
+            height = 3120;
             break;
         }
         case dai::ColorCameraProperties::SensorResolution::THE_4000X3000: {
-            height = 4000;
-            width = 3000;
+            width = 4000;
+            height = 3000;
             break;
         }
         case dai::ColorCameraProperties::SensorResolution::THE_5312X6000: {
-            height = 5312;
-            width = 6000;
+            width = 5312;
+            height = 6000;
             break;
         }
         case dai::ColorCameraProperties::SensorResolution::THE_48_MP: {
-            height = 8000;
-            width = 6000;
+            width = 8000;
+            height = 6000;
+            break;
+        }
+        case dai::ColorCameraProperties::SensorResolution::THE_1440X1080: {
+            width = 1440;
+            height = 1080;
             break;
         }
         default: {
@@ -71,12 +82,14 @@ std::vector<ImageSensor> availableSensors{
     {"OV9782", {"800P", "720p", "400p"}, true},
     {"OV9281", {"800P", "720p", "400p"}, true},
     {"IMX214", {"13mp", "12mp", "4k", "1080p"}, true},
+    {"IMX412", {"13mp", "12mp", "4k", "1080p"}, true},
     {"OV7750", {"480P", "400p"}, false},
     {"OV7251", {"480P", "400p"}, false},
     {"IMX477", {"12mp", "4k", "1080p"}, true},
     {"IMX577", {"12mp", "4k", "1080p"}, true},
     {"AR0234", {"1200P"}, true},
     {"IMX582", {"48mp", "12mp", "4k"}, true},
+    {"LCM48", {"48mp", "12mp", "4k"}, true},
 };
 void compressedImgCB(const std::string& /*name*/,
                      const std::shared_ptr<dai::ADatatype>& data,
@@ -119,7 +132,6 @@ sensor_msgs::msg::CameraInfo getCalibInfo(const rclcpp::Logger& logger,
                                           int height) {
     sensor_msgs::msg::CameraInfo info;
     auto calibHandler = device->readCalibration();
-
     try {
         info = converter.calibrationToCameraInfo(calibHandler, socket, width, height);
     } catch(std::runtime_error& e) {
